@@ -1,0 +1,29 @@
+group 'com.resolute.mapreduce'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+
+sourceCompatibility = 1.8
+
+
+def hadoopVersion = '2.5.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.apache.hadoop', name: 'hadoop-client', version: hadoopVersion
+    testCompile group: 'org.apache.mrunit', name: 'mrunit', version: '1.+', classifier: 'hadoop2'
+    testCompile group: 'org.apache.hadoop', name: 'hadoop-minicluster', version: hadoopVersion
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+// Building a fatjar with dependencies, excluding hadoop as it's provided by the exec env
+jar {
+    from {
+        configurations.compile.findAll { !it.name.contains('hadoop') }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude('**/license', '**/LICENSE')
+}
