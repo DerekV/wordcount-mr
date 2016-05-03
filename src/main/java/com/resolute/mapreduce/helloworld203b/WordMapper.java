@@ -7,15 +7,13 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 
-public class WordMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class WordMapper extends Mapper<FileLineWritable, Text, Text, IntWritable> {
 
     private static final IntWritable ONE = new IntWritable(1);
 
     @Override
-    protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+    protected void map(FileLineWritable key, Text value, Context context) throws IOException, InterruptedException {
         final String line = value.toString();
-
-
 
         for (String word : Utils.words(line)) {
             context.write(new Text(word.toLowerCase()), ONE);
